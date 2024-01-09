@@ -1,12 +1,8 @@
-import pandas as pd
 from preprocessor import setup_configs
 import rasterio
-from scipy import stats
-import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeClassifier
-from findpeaks import findpeaks
-
+from scipy.stats import norm
+import numpy as np
 def classifier(classification_method:str):
     satellite_image_dict = setup_configs()
     b4_satellite_image = satellite_image_dict['b4_satellite_image']
@@ -19,9 +15,16 @@ def classifier(classification_method:str):
     print('Band 4 Satellite Image:{} has {} Pixels in the Rows by {} Pixels in the Columns.\n'.format(b4_satellite_image, b4_data.shape[0], b4_data.shape[1]))
 
     if classification_method.upper() == 'MLE':
-        print('Maximum Likelihood Estimation Selected.\n')
-        shapir_wilk_test = stats.shapiro(b4_data)
-        print(shapir_wilk_test)
+        print('Maximum Likelihood Estimation Selected. Using Band 4 for Classification.\n')
+        water_pdf = norm.pdf(b2_data, loc=satellite_image_dict['b2_water_mean'], scale=satellite_image_dict['b2_water_sd'])
+        vegetation_pdf = norm.pdf(b2_data, loc=satellite_image_dict['b2_vegetation_mean'], scale=satellite_image_dict['b2_vegetation_sd'])
+        urban_pdf = norm.pdf(b2_data, loc=satellite_image_dict['b2_urban_mean'], scale=satellite_image_dict['b2_urban_sd'])
+        class = np.array()
+        for w in water_pdf:
+            for v in vegetation_pdf:
+                for u in urban_pdf:
+                    if w == max(w, v, u):
+
 
     if classification_method.upper() == 'HISTOGRAM':
         print('Histogram-Based Classification Selected')
@@ -30,8 +33,8 @@ def classifier(classification_method:str):
         plt.savefig(satellite_image_dict['parent_directory'] + '/Output/b2_digital_numbers_histogram.png')
         plt.show()
         plt.hist(b4_data, density=False)
-        plt.title('Band 4 Histogram of Digital Numbers. More Modes are Wore')
+        plt.title('Band 4 Histogram of Digital Numbers. More Modes are Worse')
         plt.savefig(satellite_image_dict['parent_directory'] + '/Output/b4_digital_numbers_histogram.png')
         plt.show()
 
-classifier(classification_method='Histogram')
+classifier(classification_method='MLE')

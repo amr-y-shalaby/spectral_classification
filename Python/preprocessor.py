@@ -24,18 +24,18 @@ def setup_configs():
     cell_size = int(config['b4_satellite_parameters']['cell_size'])
     b4_satellite_image = parent_dir + '/Data/toronto_2011_band4.tif'
     b2_satellite_image = parent_dir + '/Data/toronto_2011_band2.tif'
-    b2_water_body_mean = float(config['band2_classification_thresholds']['water_body_mean'])
-    b2_water_body_sd = float(config['band2_classification_thresholds']['water_body_sd'])
-    b2_urban_area_mean = float(config['band2_classification_thresholds']['urban_area_mean'])
-    b2_urban_area_sd = float(config['band2_classification_thresholds']['urban_area_sd'])
-    b2_vegetation_area_mean = float(config['band2_classification_thresholds']['vegetation_mean'])
-    b2_vegetation_area_sd = float(config['band2_classification_thresholds']['vegetation_sd'])
-    b4_water_body_mean = float(config['band4_classification_thresholds']['water_body_mean'])
-    b4_water_body_sd = float(config['band4_classification_thresholds']['water_body_sd'])
-    b4_urban_area_mean = float(config['band4_classification_thresholds']['urban_area_mean'])
-    b4_urban_area_sd = float(config['band4_classification_thresholds']['urban_area_sd'])
-    b4_vegetation_area_mean = float(config['band4_classification_thresholds']['vegetation_mean'])
-    b4_vegetation_area_sd = float(config['band4_classification_thresholds']['vegetation_sd'])
+    b2_water_mean = float(config['band2_classification_thresholds']['water_mean'])
+    b2_water_sd = float(config['band2_classification_thresholds']['water_sd'])
+    b2_urban_mean = float(config['band2_classification_thresholds']['urban_mean'])
+    b2_urban_sd = float(config['band2_classification_thresholds']['urban_sd'])
+    b2_vegetation_mean = float(config['band2_classification_thresholds']['vegetation_mean'])
+    b2_vegetation_sd = float(config['band2_classification_thresholds']['vegetation_sd'])
+    b4_water_mean = float(config['band4_classification_thresholds']['water_mean'])
+    b4_water_sd = float(config['band4_classification_thresholds']['water_sd'])
+    b4_urban_mean = float(config['band4_classification_thresholds']['urban_mean'])
+    b4_urban_sd = float(config['band4_classification_thresholds']['urban_sd'])
+    b4_vegetation_mean = float(config['band4_classification_thresholds']['vegetation_mean'])
+    b4_vegetation_sd = float(config['band4_classification_thresholds']['vegetation_sd'])
 
     if save_locally not in [True, False]:
         raise Exception(
@@ -64,14 +64,14 @@ def setup_configs():
             "Error loading Toronto 2011 Band 4 Satellite Image!"
         )
 
-    if b2_water_body_mean < 0 or b4_water_body_mean < 0 or b2_urban_area_mean < 0 or b4_urban_area_mean < 0 \
-            or b2_vegetation_area_mean < 0 or b4_vegetation_area_mean < 0:
+    if b2_water_mean < 0 or b4_water_mean < 0 or b2_urban_mean < 0 or b4_urban_mean < 0 \
+            or b2_vegetation_mean < 0 or b4_vegetation_mean < 0:
         raise Exception(
             'Error: Land Type Means must be ALL Positive >= 0'
         )
 
-    if b2_water_body_sd <= 0 or b4_water_body_sd <= 0 or b2_urban_area_sd <= 0 or b4_urban_area_sd <= 0 \
-            or b2_vegetation_area_sd <= 0 or b4_vegetation_area_sd <= 0:
+    if b2_water_sd <= 0 or b4_water_sd <= 0 or b2_urban_sd <= 0 or b4_urban_sd <= 0 \
+            or b2_vegetation_sd <= 0 or b4_vegetation_sd <= 0:
         raise Exception(
             'Error: Land Type Standard Deviations must be ALL > 0'
         )
@@ -91,19 +91,19 @@ def setup_configs():
                                     'atmosphere_transitivity': atmosphere_transitivity,
                                     'solar_radiance': solar_radiance,
                                     'zenith_angle': zenith_angle, 'incoming_irradiance': incoming_solar_irradiance,
-                                    'b2_water_body_mean':b2_water_body_mean,'b2_water_body_sd':b2_water_body_sd,
-                                    'b4_water_body_mean': b4_water_body_mean, 'b4_water_body_sd': b4_water_body_sd,
-                                    'b2_urban_area_mean':b2_urban_area_mean,'b2_urban_area_sd':b2_urban_area_sd,
-                                    'b4_urban_area_mean': b4_urban_area_mean, 'b4_urban_area_sd': b4_urban_area_sd,
-                                    'b2_vegetation_area_mean':b2_vegetation_area_mean, 'b2_vegetation_area_sd':b2_vegetation_area_sd,
-                                    'b4_vegetation_area_mean':b4_vegetation_area_mean, 'b4_vegetation_area_sd':b4_vegetation_area_sd,
+                                    'b2_water_mean':b2_water_mean,'b2_water_sd':b2_water_sd,
+                                    'b4_water_mean': b4_water_mean, 'b4_water_sd': b4_water_sd,
+                                    'b2_urban_mean':b2_urban_mean,'b2_urban_sd':b2_urban_sd,
+                                    'b4_urban_area_mean': b4_urban_mean, 'b4_urban_sd': b4_urban_sd,
+                                    'b2_vegetation_mean':b2_vegetation_mean, 'b2_vegetation_sd':b2_vegetation_sd,
+                                    'b4_vegetation_mean':b4_vegetation_mean, 'b4_vegetation_sd':b4_vegetation_sd,
                                     'parent_directory': parent_dir, 'save_local': save_locally}
     print(satellite_image_configs_dict)
     print('Save Locally Flag is set to: {}\n*****************************'.format(satellite_image_configs_dict['save_local']))
     del b4_satellite_image, b4_channel, cell_size, satellite_gain, satellite_offset, path_radiance, atmosphere_transitivity, \
         solar_radiance, zenith_angle, incoming_solar_irradiance \
-        , b2_water_body_mean, b4_water_body_mean \
-        , b2_water_body_sd, b4_water_body_sd, b2_vegetation_area_mean, b2_vegetation_area_sd \
+        , b2_water_mean, b4_water_mean \
+        , b2_water_sd, b4_water_sd, b2_vegetation_mean, b2_vegetation_sd \
         , save_locally, parent_dir
     return satellite_image_configs_dict
 
