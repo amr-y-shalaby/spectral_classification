@@ -1,3 +1,5 @@
+import pandas as pd
+
 from preprocessor import setup_configs
 import rasterio
 import matplotlib.pyplot as plt
@@ -19,12 +21,26 @@ def classifier(classification_method:str):
         water_pdf = norm.pdf(b2_data, loc=satellite_image_dict['b2_water_mean'], scale=satellite_image_dict['b2_water_sd'])
         vegetation_pdf = norm.pdf(b2_data, loc=satellite_image_dict['b2_vegetation_mean'], scale=satellite_image_dict['b2_vegetation_sd'])
         urban_pdf = norm.pdf(b2_data, loc=satellite_image_dict['b2_urban_mean'], scale=satellite_image_dict['b2_urban_sd'])
-        class = np.array()
-        for w in water_pdf:
-            for v in vegetation_pdf:
-                for u in urban_pdf:
-                    if w == max(w, v, u):
+        df_out = pd.DataFrame(columns=['i','j','local_max', 'classification'])
+        for j in range(water_pdf.shape[1]):
+            for i in range(water_pdf.shape[0]):
+                local_max = max(water_pdf[i][j], vegetation_pdf[i][j], water_pdf[i][j])
 
+                if local_max == water_pdf[i][j]:
+                    #print('Pixel at {} Row and {} Column is: {} ==> Water'.format(i, j, local_max))
+                    classification = 'water'
+                if local_max == vegetation_pdf[i][j]:
+                    #print('Pixel at {} Row and {} Column is: {} ==> Vegetation'.format(i, j, local_max))
+                    classification = 'vegetation'
+                if local_max == urban_pdf[i][j]:
+                    #print('Pixel at {} Row and {} Column is: {} ==> Urban'.format(i, j, local_max))
+                    classification = 'Urban'
+                else:
+                    print('Unknown!!!')
+                    classification = None
+                df_temp = pd.DataFrame(columns=['i', 'j', 'local_max', 'classification'], data=[i, j, local_max, classification])
+                df_out = pd.concat([df_out, df_temp])
+        df_out.to_csv('df_out.csv')
 
     if classification_method.upper() == 'HISTOGRAM':
         print('Histogram-Based Classification Selected')
